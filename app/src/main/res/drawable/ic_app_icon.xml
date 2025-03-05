@@ -1,0 +1,22 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="100dp"
+    android:height="100dp"
+    android:viewportWidth="100"
+    android:viewportHeight="100">
+
+  <!-- Outer Ring -->
+  <path
+      android:strokeColor="#1E88E5"
+      android:strokeWidth="6"
+      android:fillColor="@android:color/transparent"
+      android:pathData="M50,5A45,45 0 1,1 5,50A45,45 0 1,1 50,5Z"
+      android:strokeLineJoin="round"
+      android:strokeLineCap="round"/>
+
+  <!-- Navigation Arrow -->
+  <path
+      android:fillColor="#1E88E5"
+      android:pathData="M50,20 L65,65 L50,55 L35,65 Z"
+      android:strokeLineJoin="round"/>
+
+</vector>

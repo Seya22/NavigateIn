@@ -1,0 +1,23 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+        maven { url 'https://androidx.dev/storage/google-maven-snapshots/repository' }
+    }
+}
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven {
+            url = uri("https://maven-central.storage.googleapis.com")
+        }
+        maven {
+            url = uri("https://maven.google.com")
+        }
+    }
+}
+rootProject.name = "Navigator"
+include ':app'
