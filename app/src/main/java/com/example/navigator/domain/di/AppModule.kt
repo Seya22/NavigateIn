@@ -2,6 +2,7 @@ package com.example.navigator.domain.di
 
 import android.app.Application
 import androidx.room.Room
+import com.example.navigator.domain.use_cases.GetDestinationDesc
 import com.example.navigator.data.data_source.Database
 import com.example.navigator.data.ml.classification.TextAnalyzer
 import com.example.navigator.data.pathfinding.AStarImpl
@@ -30,7 +31,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(app: Application): Database {
         return Room.databaseBuilder(app, Database::class.java, DATABASE_NAME)
-//            .createFromAsset(DATABASE_DIR)
+            .createFromAsset(DATABASE_DIR)
             .allowMainThreadQueries()
             .addMigrations()
             .build()

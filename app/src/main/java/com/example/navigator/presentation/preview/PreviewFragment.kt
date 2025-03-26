@@ -33,12 +33,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import com.example.navigator.presentation.preview.FootTrafficDetector
 
 class PreviewFragment : Fragment() {
 
     private val mainModel: MainShareModel by activityViewModels()
-    private lateinit var footTrafficDetector: FootTrafficDetector
 
     private var _binding: FragmentPreviewBinding? = null
     private val binding get() = _binding!!
@@ -81,7 +79,6 @@ class PreviewFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        footTrafficDetector = FootTrafficDetector(requireContext())
 
         pathAdapter = PathAdapter(
             drawerHelper,
@@ -102,7 +99,6 @@ class PreviewFragment : Fragment() {
             instructions.enabled = false
             onArFrame = { frame ->
                 onDrawFrame(frame)
-                footTrafficDetector.detectFootTraffic(frame)
             }
             configureSession { arSession, config ->
                 config.depthMode = Config.DepthMode.AUTOMATIC
@@ -147,41 +143,41 @@ class PreviewFragment : Fragment() {
                 mainModel.pathState.collectLatest { pathState ->
                     //In ADMIN_MODE, all entry labels are drawn automatically, so another redraw from this function
                     //will cause node
-                 //   if (App.mode == App.USER_MODE) {
+                    //   if (App.mode == App.USER_MODE) {
 
-                        if (currentPathState?.endEntry != pathState.endEntry) {
-                            endPlacingJob?.cancel()
-                            currentPathState?.endEntry?.let { end ->
-                                treeNodesToModels[end]?.let {
-                                    drawerHelper.removeNode(it)
-                                }
-                            }
-                            endPlacingJob = viewLifecycleOwner.lifecycleScope.launch {
-                                pathState.endEntry?.let { end ->
-                                    treeNodesToModels[end] = drawerHelper.drawNode(
-                                        end,
-                                        binding.sceneView,
-                                    )
-                                }
+                    if (currentPathState?.endEntry != pathState.endEntry) {
+                        endPlacingJob?.cancel()
+                        currentPathState?.endEntry?.let { end ->
+                            treeNodesToModels[end]?.let {
+                                drawerHelper.removeNode(it)
                             }
                         }
-                        if (currentPathState?.startEntry != pathState.startEntry) {
-                            startPlacingJob?.cancel()
-                            currentPathState?.startEntry?.let { start ->
-                                treeNodesToModels[start]?.let {
-                                    drawerHelper.removeNode(it)
-                                }
-                            }
-                            startPlacingJob = viewLifecycleOwner.lifecycleScope.launch {
-                                pathState.startEntry?.let { start ->
-                                    treeNodesToModels[start] = drawerHelper.drawNode(
-                                        start,
-                                        binding.sceneView,
-                                    )
-                                }
+                        endPlacingJob = viewLifecycleOwner.lifecycleScope.launch {
+                            pathState.endEntry?.let { end ->
+                                treeNodesToModels[end] = drawerHelper.drawNode(
+                                    end,
+                                    binding.sceneView,
+                                )
                             }
                         }
-           //         }
+                    }
+                    if (currentPathState?.startEntry != pathState.startEntry) {
+                        startPlacingJob?.cancel()
+                        currentPathState?.startEntry?.let { start ->
+                            treeNodesToModels[start]?.let {
+                                drawerHelper.removeNode(it)
+                            }
+                        }
+                        startPlacingJob = viewLifecycleOwner.lifecycleScope.launch {
+                            pathState.startEntry?.let { start ->
+                                treeNodesToModels[start] = drawerHelper.drawNode(
+                                    start,
+                                    binding.sceneView,
+                                )
+                            }
+                        }
+                    }
+                    //         }
                     currentPathState = pathState
                 }
             }
@@ -192,7 +188,7 @@ class PreviewFragment : Fragment() {
                 mainModel.mainUiEvents.collectLatest { uiEvent ->
                     when (uiEvent) {
                         is MainUiEvent.InitSuccess -> {
-                           // onInitializeSuccess()
+                            // onInitializeSuccess()
                         }
                         is MainUiEvent.InitFailed -> {
                             when (uiEvent.error) {
@@ -246,8 +242,8 @@ class PreviewFragment : Fragment() {
                         }
                     }
                 }
-                }
             }
+        }
         binding.buttonRestart.setOnClickListener {
             restartApp()
         }
@@ -291,7 +287,7 @@ class PreviewFragment : Fragment() {
             }
         }
     }
-    
+
     private fun selectNode(node: ArNode?){
         val treeNode = checkTreeNode(node) ?: checkTreeNode(node?.parentNode as ArNode?)
 
@@ -363,11 +359,11 @@ class PreviewFragment : Fragment() {
 
     companion object {
         // Path rendering distance (number of nodes)
-        const val VIEWABLE_PATH_NODES = 100  // Reduced from 21 to 15
+        const val VIEWABLE_PATH_NODES = 21  // Reduced from 21 to 15
         // Tree rendering distance, used only in admin mode
-        const val VIEWABLE_ADMIN_NODES = 3f  // Reduced from 5f to 3f
+        const val VIEWABLE_ADMIN_NODES = 5f  // Reduced from 5f to 3f
         // How often the check for path and tree redraw will be
-        const val POSITION_DETECT_DELAY = 50L  // Increased from 100L to 200L
+        const val POSITION_DETECT_DELAY = 100L  // Increased from 100L to 200L
         // Image crop for recognition
         val DESIRED_CROP = Pair(8, 72)
     }
